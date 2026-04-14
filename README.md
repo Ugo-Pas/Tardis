@@ -8,7 +8,7 @@
   
 </div>
 
-Le Tardis est une projet qui permet de visualiser un tas de donnée pour faire des prédictions des futures déplacements des trains futures.
+Tardis is a project that analyzes large amounts of data to predict future train movements.
 
 
 ## Features
