@@ -30,3 +30,6 @@ df[COLUMNS_TO_NUMERIC] = df[COLUMNS_TO_NUMERIC].interpolate()
 st.write("# hello world¡¡")
 
 st.dataframe(df)
+title = st.text_input("Movie title", "ou voulez vous aller")
+
+st.write("gare d'arriver :", title)
