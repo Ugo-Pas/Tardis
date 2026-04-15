@@ -31,5 +31,6 @@ st.write("# hello world¡¡")
 
 st.dataframe(df)
 title = st.text_input("Movie title", "ou voulez vous aller")
-
+if title == "ou voulez vous aller":
+    title = None
 st.write("gare d'arriver :", title)
