@@ -26,6 +26,10 @@ df["Date"] = pd.to_datetime(df["Date"], format="%Y-%m", errors="coerce").dt.to_p
 
 df[COLUMNS_TO_NUMERIC] = df[COLUMNS_TO_NUMERIC].interpolate()
 
+a = df['Departure station'].unique()
+gare = []
+for station in a:
+    gare.append(station)
 
 st.write("# hello world¡¡")
 
@@ -35,3 +39,7 @@ if title == "ou voulez vous aller":
     st.write("gare d'arriver :")
 else:
     st.write("gare d'arriver :", title)
+
+option = st.selectbox("How would you like to be contacted?", gare,)
+
+st.write("You selected:", option)
