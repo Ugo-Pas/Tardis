@@ -6,9 +6,14 @@ import streamlit as st
 st.write("# hello world¡¡")
 
 def selecte_box_station(df:list, messager:str):
-    a = df['Departure station'].unique().dropna()
-    gare = []
-    for station in a:
-        gare.append(station)
-    option = st.selectbox(messager, gare)
+    if 'Departure station' not in df.columns:
+        st.warning("La colonne 'Departure station' est absente.")
+        return None
+
+    stations = sorted(df['Departure station'].dropna().unique().tolist())
+    if not stations:
+        st.warning("Aucune gare disponible.")
+        return None
+
+    option = st.selectbox(messager, stations)
     return option
