@@ -10,5 +10,5 @@ def selecte_box_station(df:list, messager:str):
     gare = []
     for station in a:
         gare.append(station)
-    option = st.selectbox(messager, gare,)
+    option = st.selectbox(messager, gare)
     return option
