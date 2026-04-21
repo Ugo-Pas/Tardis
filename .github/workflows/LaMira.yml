@@ -1,0 +1,36 @@
+name: La Mira
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  MIRROR_SSH_URL: git@github.com:EpitechPGE1-2025/G-AIA-210-NCE-2-1-tardis-2.git
+  MIRROR_REPO: EpitechPGE1-2025/G-AIA-210-NCE-2-1-tardis-2
+  EXEC: 42sh
+  ID_TADO: "837999039995183125"
+  ID_PEKKA: "609714833746558995"
+  ID_LKS: "1383041054760112198"
+  ID_ONI: "403173164651380736"
+  ID_GAL: "1051643862537490452"
+  ID_AL: "613188332373147648"
+
+jobs:
+  push_to_mirror:
+    runs-on: ubuntu-latest
+    if: github.repository != 'EpitechPGE1-2025/G-AIA-210-NCE-2-1-tardis-2' && github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - uses: pixta-dev/repository-mirroring-action@v1
+        with:
+          target_repo_url:
+            ${{ env.MIRROR_SSH_URL}}
+          ssh_private_key:
+            ${{ secrets.SSH_KEY_TARDIS }}
