@@ -11,6 +11,7 @@ Comming soon
 - Pytorch
 - Python 3
 - Jupiter NoteBook
+- MatplotLib
 
 ## Getting Started
 
