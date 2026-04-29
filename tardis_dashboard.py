@@ -36,7 +36,7 @@ def main():
     with st.sidebar:
         selected_page = st.radio(
             "Navigation",
-            ["🏠 Home", "1️⃣ Page 1", "2️⃣ Page 2"],
+            ["🏠 Home", "🌐 Info generale", "👤 Info utilisateur"],
             index=0,
         )
         csv = convert_for_download(df)
@@ -48,9 +48,9 @@ def main():
             icon=":material/download:",
         )
 
-    if selected_page == "1️⃣ Page 1":
+    if selected_page == "🌐 Info generale":
         render_info_generale()
-    elif selected_page == "2️⃣ Page 2":
+    elif selected_page == "👤 Info utilisateur":
         render_info_utilisateur()
     else:
         st.write("## Tardis")
