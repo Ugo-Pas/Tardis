@@ -14,6 +14,7 @@ import re
 
 from src.info_generale import render as render_info_generale
 from src.info_utilisateur import render as render_info_utilisateur
+from src.accueil import render as render_accueil
 
 DATASET = "cleaned_dataset.csv" 
 
@@ -53,7 +54,7 @@ def main():
     elif selected_page == "👤 Info utilisateur":
         render_info_utilisateur()
     else:
-        st.write("## Tardis")
+        render_accueil()
 
 def convert_for_download(df):
     return df.to_csv().encode("utf-8")
