@@ -1,4 +1,5 @@
 pandas
 matplotlib
 numpy
+streamlit
 # torch
