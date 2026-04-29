@@ -23,24 +23,31 @@ For install the dependencies and start the project, just need :
  source ./Init_env.sh 
 ```
 
-### Lauch the project 
+### Lauch the Website
 
 Just lauch the program with :
-
 ```bash
-./tardis.py
-```
+streamlit run tardis_dashboard.py
+``` 
 
 ## Project Tree
 
 This is a tree for this project :
 
 ```
-├── un truc
-├── un autre truc
+├── README.md
+├── Init_env.sh # is for creat env
+├── requirements.txt # the list of lib in env
+├── cleaned_dataset.csv 
+├── my_tardis.ipynb
+├── tardis_eda.ipynb 
+├── tardis_dashboard.py 
 ├── src/
-│   ├── truc/    # a voir
-│   └── encore truc/    #  a voir
+│   ├── accueil.py
+|   ├── info_generale.py
+│   └── info_utilisateur.py
+├── datasets/
+|   ├── dataset.csv
 ```
 
 ## Styling for the deployment
