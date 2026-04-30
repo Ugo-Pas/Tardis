@@ -12,5 +12,15 @@ import streamlit as st
 import numpy as np
 import re
 
-def render():
+from src.tools import * 
+
+def render(df):
 	st.write("## Page G")
+	YEARS = get_def_years(df)
+	years = st.selectbox("Choisis l'année",YEARS,)
+	if years == 'All':
+		st.write("Graphe all year") #! In progresse
+	else:
+		one_year_old_Garph(years, df)
+		train_cancel_one_year(years, df)
+	map_delay_3d(years, df)
