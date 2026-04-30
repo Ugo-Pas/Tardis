@@ -47,7 +47,7 @@ This is a tree for this project :
 |   ├── info_generale.py
 │   └── info_utilisateur.py
 ├── datasets/
-|   ├── dataset.csv
+|   └── dataset.csv
 ```
 
 ## Styling for the deployment
