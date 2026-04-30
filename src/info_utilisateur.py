@@ -12,5 +12,5 @@ import streamlit as st
 import numpy as np
 import re
 
-def render():
+def render(df):
 	st.write("## Page U")

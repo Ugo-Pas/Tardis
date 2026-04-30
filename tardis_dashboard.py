@@ -32,7 +32,33 @@ type dataframe = pd.DataFrame
 
 
 def main():
-    df = pd.read_csv(DATASET, on_bad_lines="skip", sep=";")
+    def _read_dataset(path):
+        # Try common separators and fall back to Python engine sniffing
+        for sep in (';', ',', '\t'):
+            try:
+                d = pd.read_csv(path, sep=sep, on_bad_lines="skip")
+            except Exception:
+                continue
+            if 'Date' in d.columns:
+                return d
+        # Fallback: let pandas try to infer with the python engine
+        return pd.read_csv(path, sep=None, engine='python', on_bad_lines="skip")
+
+    raw_df = _read_dataset(DATASET)
+    df = raw_df.drop_duplicates(ignore_index=True)
+
+    # Normalize column names and drop unnamed index columns
+    df.columns = [str(c).strip() for c in df.columns]
+    unnamed_cols = [c for c in df.columns if c.startswith("Unnamed") or c == ""]
+    if unnamed_cols:
+        df = df.drop(columns=unnamed_cols)
+
+    for col in COLUMNS_TO_NUMERIC:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col].astype(str).str.replace(',', '.'), errors="coerce")
+
+    if "Date" in df.columns:
+        df["Date"] = pd.to_datetime(df["Date"], format="%Y-%m", errors="coerce").dt.to_period("M")
 
     with st.sidebar:
         selected_page = st.radio(
@@ -50,11 +76,11 @@ def main():
         )
 
     if selected_page == "🌐 Info generale":
-        render_info_generale()
+        render_info_generale(df)
     elif selected_page == "👤 Info utilisateur":
-        render_info_utilisateur()
+        render_info_utilisateur(df)
     else:
-        render_accueil()
+        render_accueil(df)
 
 def convert_for_download(df):
     return df.to_csv().encode("utf-8")
