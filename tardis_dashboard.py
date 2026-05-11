@@ -33,7 +33,6 @@ type dataframe = pd.DataFrame
 
 def main():
     def _read_dataset(path):
-        # Try common separators and fall back to Python engine sniffing
         for sep in (';', ',', '\t'):
             try:
                 d = pd.read_csv(path, sep=sep, on_bad_lines="skip")
@@ -41,7 +40,6 @@ def main():
                 continue
             if 'Date' in d.columns:
                 return d
-        # Fallback: let pandas try to infer with the python engine
         return pd.read_csv(path, sep=None, engine='python', on_bad_lines="skip")
 
     raw_df = _read_dataset(DATASET)
