@@ -39,13 +39,19 @@ def get_def_years(df):
     years = sorted({int(p.year) for p in series.dropna().unique()})
     return years
 
-def one_year_old_Garph(year, df:list):
+def one_year_old_Garph(years, df:list):
     delay_col = "Average delay of all trains at arrival"
 
-    filtered = df.loc[
-        df["Date"].dt.year == year,
-        ["Date", "Service", delay_col]
-    ].dropna()
+    # Support a single year, a list of years, or the special "All" value
+    if years == "All" or (isinstance(years, (list, tuple)) and "All" in years):
+        filtered = df[["Date", "Service", delay_col]].dropna()
+    else:
+        if not isinstance(years, (list, tuple)):
+            years = [years]
+        filtered = df.loc[
+            df["Date"].dt.year.isin(years),
+            ["Date", "Service", delay_col]
+        ].dropna()
     monthly_delay_by_service = (
         filtered
         .groupby(["Date", "Service"], as_index=False)[delay_col]
@@ -69,7 +75,8 @@ def one_year_old_Garph(year, df:list):
             color="tab:orange",
             linewidth=2
         )
-    ax.set_title(f"Retard moyen a l'arrivee par mois - {year}")
+    title_year = "toutes les années" if (years == "All" or (isinstance(years, (list, tuple)) and "All" in years)) else (str(years) if isinstance(years, (list, tuple)) else str(years))
+    ax.set_title(f"Retard moyen a l'arrivee par mois - {title_year}")
     ax.set_xlabel("Date")
     ax.set_ylabel("Retard moyen (minutes)")
     ax.legend()
@@ -79,9 +86,16 @@ def one_year_old_Garph(year, df:list):
 
 def train_cancel_one_year(years, df:list):
     delay_col = "Number of cancelled trains"
-    monthly_delay = ( 
-        df.loc[df["Date"].dt.year == years, ["Date", delay_col]]
-        .dropna()
+    # Support single year, list of years or "All"
+    if years == "All" or (isinstance(years, (list, tuple)) and "All" in years):
+        filtered = df[["Date", delay_col]].dropna()
+    else:
+        if not isinstance(years, (list, tuple)):
+            years = [years]
+        filtered = df.loc[df["Date"].dt.year.isin(years), ["Date", delay_col]].dropna()
+
+    monthly_delay = (
+        filtered
         .sort_values("Date")
         .groupby("Date", as_index=False)[delay_col]
         .mean()
@@ -96,7 +110,8 @@ def train_cancel_one_year(years, df:list):
     mean_delay = monthly_delay[delay_col].mean()
     ax.axhline(mean_delay, color="tab:red", linestyle="--", linewidth=1.8,
             label=f"Moyenne globale: {mean_delay:.2f} trains")
-    ax.set_title("Nombre de train annulé par mois")
+    years_title = "toutes les années" if (years == "All" or (isinstance(years, (list, tuple)) and "All" in years)) else (str(years) if isinstance(years, (list, tuple)) else str(years))
+    ax.set_title(f"Nombre de train annulé par mois - {years_title}")
     ax.set_xlabel("Date")
     ax.set_ylabel("Nombre de train annulé")
     ax.legend()
@@ -104,7 +119,7 @@ def train_cancel_one_year(years, df:list):
     pl.tight_layout()
     st.pyplot(fig)
 
-def map_delay_3d(year, df):
+def map_delay_3d(years, df):
     station_coords = pd.DataFrame(
         [
             {"Departure station": "Paris Lyon", "lat": 48.8443, "lon": 2.3730},
@@ -147,12 +162,15 @@ def map_delay_3d(year, df):
         ]
     )
     delay_col = "Average delay of all trains at departure"
-    if year == "All":
+    # Support single year, list of years or "All"
+    if years == "All" or (isinstance(years, (list, tuple)) and "All" in years):
         filtered_df = df.copy()
         map_title = "Retard moyen par gare - toutes les années"
     else:
-        filtered_df = df.loc[df["Date"].dt.year == year].copy()
-        map_title = f"Retard moyen par gare - {year}"
+        if not isinstance(years, (list, tuple)):
+            years = [years]
+        filtered_df = df.loc[df["Date"].dt.year.isin(years)].copy()
+        map_title = f"Retard moyen par gare - {years}"
     filtered_df[delay_col] = pd.to_numeric(
         filtered_df[delay_col].astype(str).str.replace(',', '.'),
         errors="coerce",

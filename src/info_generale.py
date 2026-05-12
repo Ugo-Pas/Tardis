@@ -14,12 +14,12 @@ import re
 
 from src.tools import * 
 
-def render(df):
+def render(df, years):
 	st.write("## Page G")
-	YEARS = get_def_years(df)
-	years = st.selectbox("Choisis l'année",YEARS,)
-	if years == 'All':
-		st.write("Graphe all year") #! In progresse
+	if not years or (isinstance(years, (list, tuple)) and 'All' in years) or years == 'All':
+		st.write("Graphe all year")
+		one_year_old_Garph('All', df)
+		train_cancel_one_year('All', df)
 	else:
 		one_year_old_Garph(years, df)
 		train_cancel_one_year(years, df)
