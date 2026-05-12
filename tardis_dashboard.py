@@ -12,6 +12,7 @@ import streamlit as st
 import numpy as np
 import re
 
+from src.tools import get_def_years
 from src.info_generale import render as render_info_generale
 from src.info_utilisateur import render as render_info_utilisateur
 from src.accueil import render as render_accueil
@@ -64,19 +65,18 @@ def main():
             ["🏠 Home", "🌐 Info generale", "👤 Info utilisateur"],
             index=0,
         )
-        csv = convert_for_download(df)
-        st.download_button(
-            label="Download CSV",
-            data=csv,
-            file_name="data.csv",
-            mime="text/csv",
-            icon=":material/download:",
-        )
+        YEARS = get_def_years(df)
+        year = st.multiselect("Which year do you choose?",YEARS ,default=YEARS,)
+        if selected_page == "👤 Info utilisateur":
+            df_departure_station = df.dropna(subset=['Departure station'])
+            stations = np.concatenate([["Toute direction"], df_departure_station['Departure station'].unique()])
+            departure_station = st.selectbox("Gare de dapart:",stations,)
+            arrival_station = st.selectbox("Gare d'arriver:",stations,)
 
     if selected_page == "🌐 Info generale":
-        render_info_generale(df)
+        render_info_generale(df, year)
     elif selected_page == "👤 Info utilisateur":
-        render_info_utilisateur(df)
+        render_info_utilisateur(df, departure_station, arrival_station, year)
     else:
         render_accueil(df)
 
