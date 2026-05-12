@@ -264,3 +264,56 @@ def map_delay_3d(year, df):
 
     st.pydeck_chart(deck)
     st.dataframe(map_df[["Departure station", "delay"]].reset_index(drop=True))
+
+def graph_departure_arrival_station(df, departure, arrival, year):
+    departure_station = departure
+    arrival_station = arrival
+    departure_col = "Departure station"
+    arrival_col = "Arrival station"
+    target_col = "Number of cancelled trains"
+
+    route_monthly = (
+        df.loc[
+            (df["Date"].dt.year == year)
+            & (df[departure_col] == departure_station)
+            & (df[arrival_col] == arrival_station),
+            ["Date", target_col],
+        ]
+        .dropna()
+        .groupby("Date", as_index=False)[target_col]
+        .mean()
+        .sort_values("Date")
+    )
+
+    if route_monthly.empty:
+        print(f"Aucune donnee pour {departure_station} -> {arrival_station} en {year}.")
+        st.write("Aucune donnee pour", departure_station,"->", arrival_station, "en", year, ".")
+    else:
+        fig, ax = pl.subplots(figsize=(10, 5))
+        ax.plot(
+            route_monthly["Date"].dt.to_timestamp(),
+            route_monthly[target_col],
+            color="tab:blue",
+            marker="o",
+            linewidth=2,
+        )
+
+        mean_value = route_monthly[target_col].mean()
+        ax.axhline(
+            mean_value,
+            color="tab:red",
+            linestyle="--",
+            linewidth=1.8,
+            label=f"Moyenne: {mean_value:.2f}",
+        )
+
+        ax.set_title(
+            f"{target_col} par mois ({departure_station} -> {arrival_station}, {year})"
+        )
+        ax.set_xlabel("Date")
+        ax.set_ylabel(target_col)
+        ax.legend()
+        ax.grid(alpha=0.25)
+        pl.tight_layout()
+        st.pyplot(fig)
+        st.write("Total line:", len(route_monthly))
