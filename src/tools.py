@@ -37,7 +37,7 @@ def get_def_years(df):
         series = pd.to_datetime(series.astype(str), format="%Y-%m", errors="coerce").dt.to_period("M")
 
     years = sorted({int(p.year) for p in series.dropna().unique()})
-    return ['All'] + years
+    return years
 
 def one_year_old_Garph(year, df:list):
     delay_col = "Average delay of all trains at arrival"
@@ -265,20 +265,30 @@ def map_delay_3d(year, df):
     st.pydeck_chart(deck)
     st.dataframe(map_df[["Departure station", "delay"]].reset_index(drop=True))
 
-def graph_departure_arrival_station(df, departure, arrival, year):
-    departure_station = departure
-    arrival_station = arrival
+def graph_departure_arrival_station(df, departure=None, arrival=None, year=None):
     departure_col = "Departure station"
     arrival_col = "Arrival station"
     target_col = "Number of cancelled trains"
 
+    # Start with all rows
+    filtered = df.copy()
+    
+    # Apply year filter if provided
+    if year is not None:
+        if not isinstance(year, list):
+            year = [year]
+        filtered = filtered[filtered["Date"].dt.year.isin(year)]
+    
+    # Apply departure station filter if provided
+    if departure is not None:
+        filtered = filtered[filtered[departure_col] == departure]
+    
+    # Apply arrival station filter if provided
+    if arrival is not None:
+        filtered = filtered[filtered[arrival_col] == arrival]
+
     route_monthly = (
-        df.loc[
-            (df["Date"].dt.year == year)
-            & (df[departure_col] == departure_station)
-            & (df[arrival_col] == arrival_station),
-            ["Date", target_col],
-        ]
+        filtered[["Date", target_col]]
         .dropna()
         .groupby("Date", as_index=False)[target_col]
         .mean()
@@ -286,8 +296,11 @@ def graph_departure_arrival_station(df, departure, arrival, year):
     )
 
     if route_monthly.empty:
-        print(f"Aucune donnee pour {departure_station} -> {arrival_station} en {year}.")
-        st.write("Aucune donnee pour", departure_station,"->", arrival_station, "en", year, ".")
+        year_str = f"durant {year[0] if len(year) == 1 else str(year)}" if year else "toutes les années"
+        departure_str = departure if departure else "toutes les gares de départ"
+        arrival_str = arrival if arrival else "toutes les gares d'arrivée"
+        print(f"Aucune donnee pour {departure_str} -> {arrival_str} {year_str}.")
+        st.write("Aucune donnee pour", departure_str,"->", arrival_str, " ", year_str, ".")
     else:
         fig, ax = pl.subplots(figsize=(10, 5))
         ax.plot(
@@ -307,9 +320,17 @@ def graph_departure_arrival_station(df, departure, arrival, year):
             label=f"Moyenne: {mean_value:.2f}",
         )
 
-        ax.set_title(
-            f"{target_col} par mois ({departure_station} -> {arrival_station}, {year})"
-        )
+        # Build title
+        title_parts = [f"{target_col} par mois"]
+        
+        if departure or arrival:
+            title_parts.append(f" ({departure} -> {arrival})")
+        
+        if year:
+            year_str = f"{year[0]}" if len(year) == 1 else f"{year[0]} à {year[-1]}"
+            title_parts.append(f", {year_str}")
+
+        ax.set_title("".join(title_parts))
         ax.set_xlabel("Date")
         ax.set_ylabel(target_col)
         ax.legend()
