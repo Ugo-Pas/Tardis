@@ -2,4 +2,4 @@ pandas
 matplotlib
 numpy
 streamlit
-# torch
+ruff
