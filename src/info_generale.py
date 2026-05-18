@@ -15,7 +15,7 @@ import re
 from src.tools import * 
 
 def render(df, years):
-	st.write("## Page G")
+	st.markdown("<h1 style='text-align: center;'>Info generale</h1>", unsafe_allow_html=True)
 	if not years or (isinstance(years, (list, tuple)) and 'All' in years) or years == 'All':
 		st.write("Graphe all year")
 		one_year_old_Garph('All', df)

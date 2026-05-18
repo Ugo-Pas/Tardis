@@ -15,5 +15,5 @@ from src.tools import *
 
 
 def render(df, departure_station, arrival_station, year):
-	st.write("## Page U")
+	st.markdown("<h1 style='text-align: center;'>Info utilisateur</h1>", unsafe_allow_html=True)
 	graph_departure_arrival_station(df, departure_station, arrival_station, year)
