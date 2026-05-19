@@ -16,6 +16,10 @@ from src.tools import *
 
 def render(df, years):
 	st.markdown("<h1 style='text-align: center;'>Info generale</h1>", unsafe_allow_html=True)
+	st.divider()
+	# Afficher le résumé exécutif
+	render_executive_summary(df)
+	st.divider()
 	if not years or (isinstance(years, (list, tuple)) and 'All' in years) or years == 'All':
 		st.write("Graphe all year")
 		one_year_old_Garph('All', df)
@@ -23,5 +27,7 @@ def render(df, years):
 	else:
 		one_year_old_Garph(years, df)
 		train_cancel_one_year(years, df)
+	st.divider()
 	graph_delay_causes_by_route(df, None, None, years)
+	st.divider()
 	map_delay_3d(years, df)
