@@ -66,7 +66,7 @@ def main():
             index=0,
         )
         YEARS = get_def_years(df)
-        year = st.multiselect("Which year do you choose?",YEARS ,default=YEARS,)
+        year = st.multiselect("Quelle année choisissez-vous ?",YEARS ,default=YEARS,)
         if selected_page == "👤 Info utilisateur":
             df_departure_station = df.dropna(subset=['Departure station'])
             stations = np.concatenate([["Toute direction"], df_departure_station['Departure station'].unique()])
