@@ -5,12 +5,8 @@
 ## tools
 ##
 
-import pandas as pd # panda for open a csv and extract the data for file and data manipulation
 import matplotlib.pyplot as pl # matplotlib to create visualisation via graphs
-import pydeck as pdk
 import streamlit as st
-import numpy as np
-import re
 
 def one_year_old_Garph(years, df:list):
     delay_col = "Average delay of all trains at arrival"
