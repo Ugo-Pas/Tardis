@@ -446,3 +446,15 @@ def graph_delay_causes_by_route(df, departure=None, arrival=None, year=None):
     pl.tight_layout()
 
     st.pyplot(fig)
+
+    st.markdown(
+        """
+**Legende des causes**
+- Causes externes: meteo, incidents externes
+- Infrastructure: voies, signaux
+- Gestion du trafic: regulation des circulations
+- Materiel roulant: panne ou indisponibilite du train
+- Gestion en gare: organisation et equipements en gare
+- Gestion voyageurs: affluence, assistance, correspondances
+        """
+    )
