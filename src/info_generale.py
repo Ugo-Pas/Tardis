@@ -23,4 +23,5 @@ def render(df, years):
 	else:
 		one_year_old_Garph(years, df)
 		train_cancel_one_year(years, df)
+	graph_delay_causes_by_route(df, None, None, years)
 	map_delay_3d(years, df)
