@@ -33,6 +33,18 @@ def get_service_national(df, departure_station: str, arrival_station: str) -> in
     service = filtered.iloc[0]["Service"]
     return 1 if str(service).strip().casefold() == "national" else 0
 
+def check_error(detparture, arrival, month):
+    ret = 0
+    if detparture == None:
+        st.error("Aucunes stations de depart n'a eté selectioné", icon="🚨")
+        ret = -1 
+    if arrival == None:
+        st.error("Aucunes stations d'arriver n'a eté selectioné", icon="🚨")
+        ret = -1
+    if month == -1:
+        st.error("Aucuns mois n'a eté selectioné", icon="🚨")
+        ret = -1
+    return ret
 
 def model(
     model_file: str,
@@ -67,6 +79,8 @@ def render(df, departure_station : str, arrival_station : str, month : int, year
     st.divider()
     left, middle, right = st.columns(3)
     if middle.button("Lancée la prédiction", icon="📈", width="stretch", shortcut="Enter"):
+        if check_error(departure_station, arrival_station, month) == -1:
+            return 
         departure = "Departure station_" + departure_station
         arrival = "Arrival station_" + arrival_station
         service_national = get_service_national(df, departure_station, arrival_station)

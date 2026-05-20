@@ -63,7 +63,7 @@ def get_month_index(target, months) -> int:
     for i in range(len(months)):
         if target == months[i]:
             return i + 1
-    return 83
+    return -1
 
 def selectbox_prediction(years):
     month = st.selectbox(
