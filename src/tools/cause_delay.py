@@ -5,10 +5,11 @@
 ## tools
 ##
 
-import pandas as pd # panda for open a csv and extract the data for file and data manipulation
-import matplotlib.pyplot as pl # matplotlib to create visualisation via graphs
+import pandas as pd  # panda for open a csv and extract the data for file and data manipulation
+import matplotlib.pyplot as pl  # matplotlib to create visualisation via graphs
 import streamlit as st
 import numpy as np
+
 
 def graph_delay_causes_by_route(df, departure=None, arrival=None, year=None):
     departure_col = "Departure station"
@@ -37,7 +38,9 @@ def graph_delay_causes_by_route(df, departure=None, arrival=None, year=None):
 
     available_cause_cols = [col for col in cause_cols if col in filtered.columns]
     if not available_cause_cols:
-        st.warning("Aucune colonne de pourcentage des causes de retard n'a ete trouvee.")
+        st.warning(
+            "Aucune colonne de pourcentage des causes de retard n'a ete trouvee."
+        )
         return
 
     for col in available_cause_cols:
@@ -80,8 +83,12 @@ def graph_delay_causes_by_route(df, departure=None, arrival=None, year=None):
             fontsize=9,
         )
 
-    departure_str = departure if departure not in (None, "Toute direction") else "Toutes gares"
-    arrival_str = arrival if arrival not in (None, "Toute direction") else "Toutes gares"
+    departure_str = (
+        departure if departure not in (None, "Toute direction") else "Toutes gares"
+    )
+    arrival_str = (
+        arrival if arrival not in (None, "Toute direction") else "Toutes gares"
+    )
 
     if year is None or (isinstance(year, (list, tuple, np.ndarray)) and "All" in year):
         year_str = "toutes les annees"

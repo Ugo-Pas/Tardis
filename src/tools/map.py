@@ -5,11 +5,12 @@
 ## tools
 ##
 
-import pandas as pd # panda for open a csv and extract the data for file and data manipulation
+import pandas as pd  # panda for open a csv and extract the data for file and data manipulation
 import pydeck as pdk
 import streamlit as st
 
 from .format_time import format_minutes_as_duration
+
 
 def map_delay_3d(years, df):
     station_coords = pd.DataFrame(
@@ -19,8 +20,16 @@ def map_delay_3d(years, df):
             {"Departure station": "Paris Est", "lat": 48.8769, "lon": 2.3594},
             {"Departure station": "Paris Nord", "lat": 48.8809, "lon": 2.3553},
             {"Departure station": "Lyon Part Dieu", "lat": 45.7606, "lon": 4.8611},
-            {"Departure station": "Marseille Saint Charles", "lat": 43.3020, "lon": 5.3810},
-            {"Departure station": "Bordeaux Saint Jean", "lat": 44.8253, "lon": -0.5563},
+            {
+                "Departure station": "Marseille Saint Charles",
+                "lat": 43.3020,
+                "lon": 5.3810,
+            },
+            {
+                "Departure station": "Bordeaux Saint Jean",
+                "lat": 44.8253,
+                "lon": -0.5563,
+            },
             {"Departure station": "Lille", "lat": 50.6364, "lon": 3.0635},
             {"Departure station": "Nantes", "lat": 47.2161, "lon": -1.5423},
             {"Departure station": "Rennes", "lat": 48.1035, "lon": -1.6724},
@@ -32,7 +41,11 @@ def map_delay_3d(years, df):
             {"Departure station": "Metz", "lat": 49.1098, "lon": 6.1781},
             {"Departure station": "Strasbourg", "lat": 48.5857, "lon": 7.7359},
             {"Departure station": "Nice Ville", "lat": 43.7042, "lon": 7.2619},
-            {"Departure station": "Montpellier Saint Roch", "lat": 43.6047, "lon": 3.8790},
+            {
+                "Departure station": "Montpellier Saint Roch",
+                "lat": 43.6047,
+                "lon": 3.8790,
+            },
             {"Departure station": "Angers Saint Laud", "lat": 47.4660, "lon": -0.5560},
             {"Departure station": "Avignon Tgv", "lat": 43.9230, "lon": 4.7860},
             {"Departure station": "Aix En Provence Tgv", "lat": 43.4555, "lon": 5.3182},
@@ -40,7 +53,11 @@ def map_delay_3d(years, df):
             {"Departure station": "La Rochelle Ville", "lat": 46.1567, "lon": -1.1525},
             {"Departure station": "Barcelona", "lat": 41.3874, "lon": 2.1686},
             {"Departure station": "Bellegarde (Ain)", "lat": 46.1085, "lon": 5.8230},
-            {"Departure station": "Chambery Challes Les Eaux", "lat": 45.5710, "lon": 5.9190},
+            {
+                "Departure station": "Chambery Challes Les Eaux",
+                "lat": 45.5710,
+                "lon": 5.9190,
+            },
             {"Departure station": "Dijon Ville", "lat": 47.3230, "lon": 5.0270},
             {"Departure station": "Francfort", "lat": 50.1072, "lon": 8.6638},
             {"Departure station": "Geneve", "lat": 46.2044, "lon": 6.1432},
@@ -64,11 +81,11 @@ def map_delay_3d(years, df):
         filtered_df = df.loc[df["Date"].dt.year.isin(years)].copy()
         map_title = f"Retard moyen par gare - {years}"
     filtered_df[delay_col] = pd.to_numeric(
-        filtered_df[delay_col].astype(str).str.replace(',', '.'),
+        filtered_df[delay_col].astype(str).str.replace(",", "."),
         errors="coerce",
     )
     filtered_df["Number of scheduled trains"] = pd.to_numeric(
-        filtered_df["Number of scheduled trains"].astype(str).str.replace(',', '.'),
+        filtered_df["Number of scheduled trains"].astype(str).str.replace(",", "."),
         errors="coerce",
     )
     delay_by_station = (
@@ -77,28 +94,50 @@ def map_delay_3d(years, df):
         .rename(columns={delay_col: "delay"})
     )
     route_by_station = (
-        filtered_df.groupby(["Departure station", "Arrival station"], as_index=False)["Number of scheduled trains"]
+        filtered_df.groupby(["Departure station", "Arrival station"], as_index=False)[
+            "Number of scheduled trains"
+        ]
         .sum()
         .rename(columns={"Number of scheduled trains": "trains"})
     )
-    map_df = (
-        delay_by_station.merge(station_coords, on="Departure station", how="inner")
-        .sort_values("delay", ascending=False)
-    )
+    map_df = delay_by_station.merge(
+        station_coords, on="Departure station", how="inner"
+    ).sort_values("delay", ascending=False)
     map_df["tooltip_title"] = map_df["Departure station"]
     map_df["tooltip_value"] = map_df["delay"].apply(
         lambda value: f"{format_minutes_as_duration(value)} de retard moyen"
     )
-    route_df = (
-        route_by_station
-        .merge(station_coords.rename(columns={"Departure station": "Departure station", "lat": "source_lat", "lon": "source_lon"}), on="Departure station", how="inner")
-        .merge(station_coords.rename(columns={"Departure station": "Arrival station", "lat": "target_lat", "lon": "target_lon"}), on="Arrival station", how="inner")
+    route_df = route_by_station.merge(
+        station_coords.rename(
+            columns={
+                "Departure station": "Departure station",
+                "lat": "source_lat",
+                "lon": "source_lon",
+            }
+        ),
+        on="Departure station",
+        how="inner",
+    ).merge(
+        station_coords.rename(
+            columns={
+                "Departure station": "Arrival station",
+                "lat": "target_lat",
+                "lon": "target_lon",
+            }
+        ),
+        on="Arrival station",
+        how="inner",
     )
-    route_df["tooltip_title"] = route_df["Departure station"] + " -> " + route_df["Arrival station"]
-    route_df["tooltip_value"] = route_df["trains"].round(0).astype("Int64").astype(str) + " trains programmés"
+    route_df["tooltip_title"] = (
+        route_df["Departure station"] + " -> " + route_df["Arrival station"]
+    )
+    route_df["tooltip_value"] = (
+        route_df["trains"].round(0).astype("Int64").astype(str) + " trains programmés"
+    )
     if not route_df.empty:
         route_min = route_df["trains"].min()
         route_max = route_df["trains"].max()
+
         def route_color(value):
             if route_max == route_min:
                 ratio = 1.0
@@ -108,22 +147,35 @@ def map_delay_3d(years, df):
             green = int(190 - 90 * ratio)
             blue = int(230 - 140 * ratio)
             return [red, green, blue, 120]
+
         route_df["color"] = route_df["trains"].apply(route_color)
         route_df["line_width"] = route_df["trains"].apply(
-            lambda value: 1.0 if route_max == route_min else (1.0 + 3.0 * (value - route_min) / (route_max - route_min))
+            lambda value: (
+                1.0
+                if route_max == route_min
+                else (1.0 + 3.0 * (value - route_min) / (route_max - route_min))
+            )
         )
-        route_df["source_position"] = route_df.apply(lambda row: [row["source_lon"], row["source_lat"]], axis=1)
-        route_df["target_position"] = route_df.apply(lambda row: [row["target_lon"], row["target_lat"]], axis=1)
+        route_df["source_position"] = route_df.apply(
+            lambda row: [row["source_lon"], row["source_lat"]], axis=1
+        )
+        route_df["target_position"] = route_df.apply(
+            lambda row: [row["target_lon"], row["target_lat"]], axis=1
+        )
     st.subheader(map_title)
     if map_df.empty:
         st.info("Aucune gare n'a pu être affichée avec des coordonnées disponibles.")
         return
     if len(map_df) < len(delay_by_station):
-        st.caption(f"{len(map_df)} gares affichées avec coordonnées sur {len(delay_by_station)} gares agrégées.")
+        st.caption(
+            f"{len(map_df)} gares affichées avec coordonnées sur {len(delay_by_station)} gares agrégées."
+        )
     if route_df.empty:
         st.caption("Aucun trajet n'a pu être tracé avec les coordonnées disponibles.")
     elif len(route_df) < len(route_by_station):
-        st.caption(f"{len(route_df)} trajets affichés avec coordonnées sur {len(route_by_station)} trajets agrégés.")
+        st.caption(
+            f"{len(route_df)} trajets affichés avec coordonnées sur {len(route_by_station)} trajets agrégés."
+        )
     view_state = pdk.ViewState(
         latitude=46.8,
         longitude=3.0,

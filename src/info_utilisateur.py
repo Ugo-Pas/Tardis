@@ -19,8 +19,12 @@ def render(df, departure_station, arrival_station, year):
         "<h1 style='text-align: center;'>Info utilisateur</h1>", unsafe_allow_html=True
     )
     st.divider()
-    st.markdown(f"### Nombre de trains annulés sur le trajet {departure_station} -> {arrival_station}")
+    st.markdown(
+        f"### Nombre de trains annulés sur le trajet {departure_station} -> {arrival_station}"
+    )
     graph_departure_arrival_station(df, departure_station, arrival_station, year)
     st.divider()
-    st.markdown(f"### Causes des retards sur le trajet {departure_station} -> {arrival_station}")
+    st.markdown(
+        f"### Causes des retards sur le trajet {departure_station} -> {arrival_station}"
+    )
     graph_delay_causes_by_route(df, departure_station, arrival_station, year)

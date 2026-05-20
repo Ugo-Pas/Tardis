@@ -1,12 +1,12 @@
 ##
 ## EPITECH PROJECT, 2026
-## acceuil 
+## acceuil
 ## File description:
 ## acceuil
 ##
 
-import pandas as pd # panda for open a csv and extract the data for file and data manipulation
-import matplotlib.pyplot as pl # matplotlib to create visualisation via graphs
+import pandas as pd  # panda for open a csv and extract the data for file and data manipulation
+import matplotlib.pyplot as pl  # matplotlib to create visualisation via graphs
 import pydeck as pdk
 import streamlit as st
 import numpy as np
@@ -21,7 +21,10 @@ def render(df, contributors=None):
         "</div>",
         unsafe_allow_html=True,
     )
-    st.markdown("<h3 style='text-align: center;'>\"Sorry, i'm late\"</h3>", unsafe_allow_html=True)
+    st.markdown(
+        "<h3 style='text-align: center;'>\"Sorry, i'm late\"</h3>",
+        unsafe_allow_html=True,
+    )
     st.markdown(
         """
         ## Comment utiliser le site

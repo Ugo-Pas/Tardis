@@ -15,12 +15,12 @@ from .map import map_delay_3d
 from .render_train import render_executive_summary
 
 __all__ = [
-    'format_minutes_as_duration',
-    'get_def_years',
-    'one_year_old_Garph',
-    'train_cancel_one_year',
-    'graph_delay_causes_by_route',
-    'graph_departure_arrival_station',
-    'map_delay_3d',
-    'render_executive_summary',
+    "format_minutes_as_duration",
+    "get_def_years",
+    "one_year_old_Garph",
+    "train_cancel_one_year",
+    "graph_delay_causes_by_route",
+    "graph_departure_arrival_station",
+    "map_delay_3d",
+    "render_executive_summary",
 ]
