@@ -81,7 +81,15 @@ def selectbox_prediction(years):
         step=1,
         format="%d",
     )
-    return index_month, int(year)
+    vacance = st.toggle("Partez vous durant des vacances")
+    weekend = st.toggle("Partez vous durant un week-end")
+    int_vacance = 0
+    int_weekend = 0
+    if vacance:
+        int_vacance = 1
+    if weekend:
+        int_weekend = 1
+    return index_month, int(year), int_vacance, int_weekend
 
 
 def selectbox_stations(df, selected_page):
@@ -162,7 +170,7 @@ def main():
         if selected_page == "👤 Info utilisateur" or selected_page == "📈 Prédiction" :
             departure_station, arrival_station = selectbox_stations(df, selected_page)
         if selected_page == "📈 Prédiction" :
-            month, year = selectbox_prediction(YEARS)
+            month, year, vacances, weekend = selectbox_prediction(YEARS)
 
 
     if selected_page == "🌐 Info generale":
@@ -170,7 +178,7 @@ def main():
     elif selected_page == "👤 Info utilisateur":
         render_info_utilisateur(df, departure_station, arrival_station, year)
     elif selected_page == "📈 Prédiction":
-        render_prédiction(df, departure_station, arrival_station, month, year)
+        render_prédiction(df, departure_station, arrival_station, month, year, vacances, weekend)
     else:
         render_accueil(df)
 
