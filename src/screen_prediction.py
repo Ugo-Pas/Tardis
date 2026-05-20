@@ -65,7 +65,8 @@ def render(df, departure_station : str, arrival_station : str, month : int, year
         "<h1 style='text-align: center;'>Prédiction</h1>", unsafe_allow_html=True
     )
     st.divider()
-    if departure_station != None and arrival_station != None and month != 84:
+    left, middle, right = st.columns(3)
+    if middle.button("Lancée la prédiction", icon="📈", width="stretch", shortcut="Enter"):
         departure = "Departure station_" + departure_station
         arrival = "Arrival station_" + arrival_station
         service_national = get_service_national(df, departure_station, arrival_station)
