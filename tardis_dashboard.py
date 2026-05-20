@@ -16,8 +16,24 @@ from src.tools import get_def_years
 from src.info_generale import render as render_info_generale
 from src.info_utilisateur import render as render_info_utilisateur
 from src.accueil import render as render_accueil
+from src.screen_prediction import render as render_prédiction
 
 DATASET = "cleaned_dataset.csv"
+
+MONTHS = [
+    "Janvier",
+    "Février",
+    "Mars",
+    "Avril",
+    "Mai",
+    "Juin",
+    "Juillet",
+    "Août",
+    "Septembre",
+    "Octobre",
+    "Novembre",
+    "Décembre",
+]
 
 COLUMNS_TO_NUMERIC = [
     "Average journey time",
@@ -42,6 +58,71 @@ COLUMNS_TO_NUMERIC = [
 ]
 
 type dataframe = pd.DataFrame
+
+
+def get_month_index(target, months) -> int:
+    for i in range(len(months)):
+        if target == months[i]:
+            return i + 1
+    return -1
+
+
+def selectbox_prediction(years):
+    month = st.selectbox(
+        "Choisissez votre mois",
+        MONTHS,
+        index=None,
+        placeholder="Choisissez votre mois",
+    )
+    index_month = get_month_index(month, MONTHS)
+    year = st.number_input(
+        "Choisissez votre année",
+        min_value=0,
+        max_value=3000,
+        value=2024,
+        step=1,
+        format="%d",
+    )
+    vacance = st.toggle("Partez vous durant des vacances")
+    weekend = st.toggle("Partez vous durant un week-end")
+    int_vacance = 0
+    int_weekend = 0
+    if vacance:
+        int_vacance = 1
+    if weekend:
+        int_weekend = 1
+    return index_month, int(year), int_vacance, int_weekend
+
+
+def selectbox_stations(df, selected_page):
+    # selectbox pour le choix des gares
+    df_departure_station = df.dropna(subset=["Departure station"])
+    stations = df_departure_station["Departure station"].unique()
+
+    departure_station = st.selectbox(
+        "Gare de dapart:",
+        stations,
+        index=None,
+        placeholder="Gare de depart",
+    )
+    # Adapter la liste des gares d'arrivée selon la gare de départ
+    if departure_station == None:
+        df_arrival_station = df.dropna(subset=["Arrival station"])
+        arrival_stations = df_arrival_station["Arrival station"].unique()
+    else:
+        # Filtrer les gares d'arrivée selon la gare de départ sélectionnée
+        df_filtered = df[df["Departure station"] == departure_station].dropna(
+            subset=["Arrival station"]
+        )
+        arrival_stations = df_filtered["Arrival station"].unique()
+
+    arrival_station = st.selectbox(
+        "Gare d'arriver:",
+        arrival_stations,
+        index=None,
+        placeholder="Gare d'arriver",
+    )
+    return departure_station, arrival_station
 
 
 def main():
@@ -78,55 +159,29 @@ def main():
     with st.sidebar:
         selected_page = st.radio(
             "Navigation",
-            ["🏠 Home", "🌐 Info generale", "👤 Info utilisateur"],
+            ["🏠 Home", "🌐 Info generale", "👤 Info utilisateur", "📈 Prédiction"],
             index=0,
         )
         YEARS = get_def_years(df)
-        year = st.multiselect(
-            "Quelle année choisissez-vous ?",
-            YEARS,
-            default=YEARS,
-        )
-        if selected_page == "👤 Info utilisateur":
-            df_departure_station = df.dropna(subset=["Departure station"])
-            stations = np.concatenate(
-                [
-                    ["Toute direction"],
-                    df_departure_station["Departure station"].unique(),
-                ]
+        if selected_page != "📈 Prédiction":
+            year = st.multiselect(
+                "Quelle année choisissez-vous ?",
+                YEARS,
+                default=YEARS,
             )
-            departure_station = st.selectbox(
-                "Gare de dapart:",
-                stations,
-            )
-
-            # Adapter la liste des gares d'arrivée selon la gare de départ
-            if departure_station == "Toute direction":
-                df_arrival_station = df.dropna(subset=["Arrival station"])
-                arrival_stations = np.concatenate(
-                    [
-                        ["Toute direction"],
-                        df_arrival_station["Arrival station"].unique(),
-                    ]
-                )
-            else:
-                # Filtrer les gares d'arrivée selon la gare de départ sélectionnée
-                df_filtered = df[df["Departure station"] == departure_station].dropna(
-                    subset=["Arrival station"]
-                )
-                arrival_stations = np.concatenate(
-                    [["Toute direction"], df_filtered["Arrival station"].unique()]
-                )
-
-            arrival_station = st.selectbox(
-                "Gare d'arriver:",
-                arrival_stations,
-            )
+        if selected_page == "👤 Info utilisateur" or selected_page == "📈 Prédiction":
+            departure_station, arrival_station = selectbox_stations(df, selected_page)
+        if selected_page == "📈 Prédiction":
+            month, year, vacances, weekend = selectbox_prediction(YEARS)
 
     if selected_page == "🌐 Info generale":
         render_info_generale(df, year)
     elif selected_page == "👤 Info utilisateur":
         render_info_utilisateur(df, departure_station, arrival_station, year)
+    elif selected_page == "📈 Prédiction":
+        render_prédiction(
+            df, departure_station, arrival_station, month, year, vacances, weekend
+        )
     else:
         render_accueil(df)
 

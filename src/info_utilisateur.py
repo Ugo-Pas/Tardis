@@ -22,7 +22,10 @@ def render(df, departure_station, arrival_station, year):
     st.markdown(
         f"### Nombre de trains annulés sur le trajet {departure_station} -> {arrival_station}"
     )
+    if departure_station == None and arrival_station == None:
+        st.warning("Aucunes stations n'a eté selectioné", icon="⚠️")
     graph_departure_arrival_station(df, departure_station, arrival_station, year)
+    graph_departure_arrival_station_delay(df, departure_station, arrival_station, year)
     st.divider()
     st.markdown(
         f"### Causes des retards sur le trajet {departure_station} -> {arrival_station}"

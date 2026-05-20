@@ -22,7 +22,8 @@ def graph_delay_causes_by_route(df, departure=None, arrival=None, year=None):
         "Pct delay due to station management and equipment reuse",
         "Pct delay due to passenger handling (crowding, disabled persons, connections)",
     ]
-
+    if year == []:
+        return st.error("Aucunes années n'a eté selectioné", icon="🚨")
     filtered = df.copy()
 
     if year is not None:
