@@ -19,6 +19,12 @@ def render(df, years):
     st.markdown(
         "<h1 style='text-align: center;'>Info generale</h1>", unsafe_allow_html=True
     )
+    st.divider()
+    st.markdown("### Résumé exécutif")
+    # Afficher le résumé exécutif
+    render_executive_summary(df)
+    st.divider()
+    st.markdown("### Évolution des retards et des annulations")
     if (
         not years
         or (isinstance(years, (list, tuple)) and "All" in years)
@@ -30,4 +36,9 @@ def render(df, years):
     else:
         one_year_old_Garph(years, df)
         train_cancel_one_year(years, df)
+    st.divider()
+    st.markdown("### Causes des retards")
+    graph_delay_causes_by_route(df, None, None, years)
+    st.divider()
+    st.markdown("### Carte des retards")
     map_delay_3d(years, df)

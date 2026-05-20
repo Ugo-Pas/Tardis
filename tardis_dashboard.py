@@ -83,7 +83,7 @@ def main():
         )
         YEARS = get_def_years(df)
         year = st.multiselect(
-            "Which year do you choose?",
+            "Quelle année choisissez-vous ?",
             YEARS,
             default=YEARS,
         )
@@ -99,9 +99,28 @@ def main():
                 "Gare de dapart:",
                 stations,
             )
+
+            # Adapter la liste des gares d'arrivée selon la gare de départ
+            if departure_station == "Toute direction":
+                df_arrival_station = df.dropna(subset=["Arrival station"])
+                arrival_stations = np.concatenate(
+                    [
+                        ["Toute direction"],
+                        df_arrival_station["Arrival station"].unique(),
+                    ]
+                )
+            else:
+                # Filtrer les gares d'arrivée selon la gare de départ sélectionnée
+                df_filtered = df[df["Departure station"] == departure_station].dropna(
+                    subset=["Arrival station"]
+                )
+                arrival_stations = np.concatenate(
+                    [["Toute direction"], df_filtered["Arrival station"].unique()]
+                )
+
             arrival_station = st.selectbox(
                 "Gare d'arriver:",
-                stations,
+                arrival_stations,
             )
 
     if selected_page == "🌐 Info generale":
