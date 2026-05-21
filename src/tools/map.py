@@ -5,14 +5,19 @@
 ## tools
 ##
 
-import pandas as pd  # panda for open a csv and extract the data for file and data manipulation
-import pydeck as pdk
-import streamlit as st
+import pandas as pd  # pandas: manipulation de DataFrame
+import pydeck as pdk  # pydeck: rendu de cartes 3D/visuelles (deck.gl wrapper)
+import streamlit as st  # streamlit: interface web pour afficher la carte
 
-from .format_time import format_minutes_as_duration
+from .format_time import format_minutes_as_duration  # utilitaire de formatage du temps
 
 
 def map_delay_3d(years, df):
+    # Liste des coordonnées connues pour certaines gares
+    # (utilisée pour centrer les marqueurs/colonnes et tracer les arcs entre gares).
+    # Le DataFrame `station_coords` contient les colonnes:
+    #  - 'Departure station' : nom de la gare (clé de jointure)
+    #  - 'lat', 'lon' : coordonnées géographiques
     station_coords = pd.DataFrame(
         [
             {"Departure station": "Paris Lyon", "lat": 48.8443, "lon": 2.3730},
@@ -70,8 +75,12 @@ def map_delay_3d(years, df):
             {"Departure station": "Zurich", "lat": 47.3769, "lon": 8.5417},
         ]
     )
+    # Nom de la colonne dans le DataFrame d'entrée qui contient le retard moyen
     delay_col = "Average delay of all trains at departure"
-    # Support single year, list of years or "All"
+    # Filtrage par année:
+    # - si years == "All" on conserve toutes les lignes
+    # - sinon on accepte un entier ou une liste d'années
+    # Cette section construit `filtered_df` et une `map_title` descriptive.
     if years == "All" or (isinstance(years, (list, tuple)) and "All" in years):
         filtered_df = df.copy()
         map_title = "Retard moyen par gare - toutes les années"
@@ -80,6 +89,9 @@ def map_delay_3d(years, df):
             years = [years]
         filtered_df = df.loc[df["Date"].dt.year.isin(years)].copy()
         map_title = f"Retard moyen par gare - {years}"
+    # Conversion des colonnes contenant des nombres éventuellement formatés
+    # avec une virgule décimale en valeurs numériques (float/int). On force
+    # les erreurs en NaN via errors='coerce'.
     filtered_df[delay_col] = pd.to_numeric(
         filtered_df[delay_col].astype(str).str.replace(",", "."),
         errors="coerce",
@@ -88,11 +100,13 @@ def map_delay_3d(years, df):
         filtered_df["Number of scheduled trains"].astype(str).str.replace(",", "."),
         errors="coerce",
     )
+    # Calcul du retard moyen par gare de départ
     delay_by_station = (
         filtered_df.groupby("Departure station", as_index=False)[delay_col]
         .mean()
         .rename(columns={delay_col: "delay"})
     )
+    # Agrégation du nombre de trains programmés par paire (départ, arrivée)
     route_by_station = (
         filtered_df.groupby(["Departure station", "Arrival station"], as_index=False)[
             "Number of scheduled trains"
@@ -100,13 +114,19 @@ def map_delay_3d(years, df):
         .sum()
         .rename(columns={"Number of scheduled trains": "trains"})
     )
+    # Fusion des retards moyens avec les coordonnées disponibles;
+    # on utilise une jointure inner pour ne garder que les gares dont
+    # on possède les coordonnées.
     map_df = delay_by_station.merge(
         station_coords, on="Departure station", how="inner"
     ).sort_values("delay", ascending=False)
+    # Colonnes pour l'affichage dans l'infobulle (tooltip)
     map_df["tooltip_title"] = map_df["Departure station"]
     map_df["tooltip_value"] = map_df["delay"].apply(
         lambda value: f"{format_minutes_as_duration(value)} de retard moyen"
     )
+    # Construire un DataFrame décrivant les trajets (source/target) avec
+    # leurs coordonnées pour pouvoir tracer des arcs entre gares.
     route_df = route_by_station.merge(
         station_coords.rename(
             columns={
@@ -137,7 +157,9 @@ def map_delay_3d(years, df):
     if not route_df.empty:
         route_min = route_df["trains"].min()
         route_max = route_df["trains"].max()
-
+        # Calcul d'une couleur et d'une épaisseur de ligne proportionnelles
+        # au nombre de trains programmés. On normalise entre route_min et
+        # route_max pour obtenir un dégradé de couleurs et une largeur.
         def route_color(value):
             if route_max == route_min:
                 ratio = 1.0
@@ -146,9 +168,11 @@ def map_delay_3d(years, df):
             red = int(100 + 120 * ratio)
             green = int(190 - 90 * ratio)
             blue = int(230 - 140 * ratio)
+            # alpha fixé à 120 pour semi-transparence
             return [red, green, blue, 120]
 
         route_df["color"] = route_df["trains"].apply(route_color)
+        # largeur de la ligne proportionnelle (valeur minimale = 1.0)
         route_df["line_width"] = route_df["trains"].apply(
             lambda value: (
                 1.0
@@ -156,6 +180,7 @@ def map_delay_3d(years, df):
                 else (1.0 + 3.0 * (value - route_min) / (route_max - route_min))
             )
         )
+        # positions source/target au format attendu par pydeck
         route_df["source_position"] = route_df.apply(
             lambda row: [row["source_lon"], row["source_lat"]], axis=1
         )
@@ -176,6 +201,7 @@ def map_delay_3d(years, df):
         st.caption(
             f"{len(route_df)} trajets affichés avec coordonnées sur {len(route_by_station)} trajets agrégés."
         )
+    # Configuration initiale de la vue (centrage, zoom, inclinaison)
     view_state = pdk.ViewState(
         latitude=46.8,
         longitude=3.0,
@@ -223,6 +249,6 @@ def map_delay_3d(years, df):
         ],
         tooltip={"text": "{tooltip_title}\n{tooltip_value}"},
     )
-
+    # Affichage: carte interactive suivie d'un tableau récapitulatif
     st.pydeck_chart(deck)
     st.dataframe(map_df[["Departure station", "delay"]].reset_index(drop=True))

@@ -74,7 +74,7 @@ def selectbox_prediction(years):
         index=None,
         placeholder="Choisissez votre mois",
     )
-    index_month = get_month_index(month, MONTHS)
+    index_month = get_month_index(month, MONTHS) # get index to the list months
     year = st.number_input(
         "Choisissez votre année",
         min_value=0,
@@ -83,6 +83,7 @@ def selectbox_prediction(years):
         step=1,
         format="%d",
     )
+    # get if go in holiday and week 
     vacance = st.toggle("Partez vous durant des vacances")
     weekend = st.toggle("Partez vous durant un week-end")
     int_vacance = 0
@@ -161,8 +162,8 @@ def main():
             "Navigation",
             ["🏠 Home", "🌐 Info generale", "👤 Info utilisateur", "📈 Prédiction"],
             index=0,
-        )
-        YEARS = get_def_years(df)
+        ) # select screen  
+        YEARS = get_def_years(df) # get list f year in dataset
         if selected_page != "📈 Prédiction":
             year = st.multiselect(
                 "Quelle année choisissez-vous ?",
@@ -170,10 +171,11 @@ def main():
                 default=YEARS,
             )
         if selected_page == "👤 Info utilisateur" or selected_page == "📈 Prédiction":
-            departure_station, arrival_station = selectbox_stations(df, selected_page)
+            departure_station, arrival_station = selectbox_stations(df, selected_page) # filter by screen 
         if selected_page == "📈 Prédiction":
-            month, year, vacances, weekend = selectbox_prediction(YEARS)
+            month, year, vacances, weekend = selectbox_prediction(YEARS)  # filter by screen 
 
+#fuction to go on screen 
     if selected_page == "🌐 Info generale":
         render_info_generale(df, year)
     elif selected_page == "👤 Info utilisateur":
