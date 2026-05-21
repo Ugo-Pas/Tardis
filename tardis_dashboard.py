@@ -84,8 +84,8 @@ def selectbox_prediction(years):
         format="%d",
     )
     # get if go in holiday and week 
-    vacance = st.toggle("Partez vous durant des vacances")
-    weekend = st.toggle("Partez vous durant un week-end")
+    vacance = st.toggle("Partez-vous pendant les vacances ?")
+    weekend = st.toggle("Partez-vous pendant un week-end ?")
     int_vacance = 0
     int_weekend = 0
     if vacance:
@@ -101,10 +101,10 @@ def selectbox_stations(df, selected_page):
     stations = df_departure_station["Departure station"].unique()
 
     departure_station = st.selectbox(
-        "Gare de dapart:",
+        "Gare de départ:",
         stations,
         index=None,
-        placeholder="Gare de depart",
+        placeholder="Gare de départ",
     )
     # Adapter la liste des gares d'arrivée selon la gare de départ
     if departure_station == None:
@@ -118,10 +118,10 @@ def selectbox_stations(df, selected_page):
         arrival_stations = df_filtered["Arrival station"].unique()
 
     arrival_station = st.selectbox(
-        "Gare d'arriver:",
+        "Gare d'arrivée:",
         arrival_stations,
         index=None,
-        placeholder="Gare d'arriver",
+        placeholder="Gare d'arrivée",
     )
     return departure_station, arrival_station
 
@@ -160,7 +160,7 @@ def main():
     with st.sidebar:
         selected_page = st.radio(
             "Navigation",
-            ["🏠 Home", "🌐 Info generale", "👤 Info utilisateur", "📈 Prédiction"],
+            ["🏠 Home", "🌐 Info générale", "👤 Info utilisateur", "📈 Prédiction"],
             index=0,
         ) # select screen  
         YEARS = get_def_years(df) # get list f year in dataset
