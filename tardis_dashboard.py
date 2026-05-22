@@ -196,4 +196,5 @@ def convert_for_download(df):
     return df.to_csv().encode("utf-8")
 
 
-main()
+if __name__ == "__main__":
+    main()
