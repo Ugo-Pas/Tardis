@@ -6,3 +6,4 @@ xgboost
 streamlit
 ruff
 seaborn
+pytest

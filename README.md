@@ -60,4 +60,10 @@ This is a tree for this project :
 
 Wait the deployment
 
+## UNIT TESTS
+
+```bash
+python -m pytest -v
+```
+
 ---
