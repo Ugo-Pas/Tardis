@@ -23,7 +23,12 @@ src/
 
 ## Different screen 
 
-**accueil.py** This is the homepage screen. Only markdow function for display
-```st.markdown()```
+**accueil.py** This is the homepage screen. Only markdown function for display<br>
 #
-**info_generale.py** This is the screen for general information with simple graph for cancel and delay train 
+**info_generale.py** This is the screen for generals informations with simple graph streamlit functions and tools are called.<br>
+#
+**info_utilisateur.py** This is the user screen for search your nexts travels<br>
+#
+**screen_prediction.py** This is the prédiction screen for your nexts travels.
+#
+**tools/** This is the folder for tools functions to use in the main file 
