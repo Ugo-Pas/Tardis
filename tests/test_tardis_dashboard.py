@@ -81,7 +81,9 @@ def test_convert_for_download_large():
         (["D", "D", "D"], ["C", "B", "A"], "D", "A"),
     ],
 )
-def test_selectbox_stations_various(monkeypatch, departures, arrivals, choice_dep, choice_arr):
+def test_selectbox_stations_various(
+    monkeypatch, departures, arrivals, choice_dep, choice_arr
+):
     df = pd.DataFrame({"Departure station": departures, "Arrival station": arrivals})
     choices = iter([choice_dep, choice_arr])
 
