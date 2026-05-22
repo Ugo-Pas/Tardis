@@ -125,7 +125,29 @@ def render(
             weekend,
             service_national,
         )
-        st.write(f"Retard prédit : {train_late:.1f} minutes")
-        st.write(f"Pourcantage de chance d'un train annulé : {pct_cancel:.1f} %")
+        
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric(
+                label="📋 Nombre total de trains",
+                value=f"in progress",
+                delta=None,
+            )
+        with col2:
+            if pct_cancel:
+                st.metric(
+                    label="❌ Pourcentage d'annulation",
+                    value=f"{pct_cancel:.2f}%",
+                    delta=None,
+                )
+            else:
+                st.info("💡 Données d'annulation non disponibles")
+        with col3:
+            st.metric(
+                label="⏱️ Retard moyen global",
+                value=format_minutes_as_duration(train_late),
+                delta=None,
+            )
+        st.divider()
         print(f"Retard prédit : {train_late:.1f} minutes")
         print(f"Pourcantage de chance d'un train annulé : {pct_cancel:.1f} %")
