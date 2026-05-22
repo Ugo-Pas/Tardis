@@ -116,7 +116,7 @@ def render(
             service_national,
         )
         pct_cancel = model(
-            "model_train_cancel.pkl",
+            "src/Bonus/model_train_cancel.pkl",
             departure,
             arrival,
             year,
