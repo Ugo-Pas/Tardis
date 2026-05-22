@@ -10,26 +10,26 @@ import streamlit as st
 
 
 def train_cancel_one_year(years, df: list):
-    delay_col = "Number of cancelled trains"
+    DELAY_COL = "Number of cancelled trains"
     # Support single year, list of years or "All"
     if years == "All" or (isinstance(years, (list, tuple)) and "All" in years):
-        filtered = df[["Date", delay_col]].dropna()
+        filtered = df[["Date", DELAY_COL]].dropna()
     else:
         if not isinstance(years, (list, tuple)):
             years = [years]
-        filtered = df.loc[df["Date"].dt.year.isin(years), ["Date", delay_col]].dropna()
+        filtered = df.loc[df["Date"].dt.year.isin(years), ["Date", DELAY_COL]].dropna()
 
     monthly_delay = (
-        filtered.sort_values("Date").groupby("Date", as_index=False)[delay_col].mean()
+        filtered.sort_values("Date").groupby("Date", as_index=False)[DELAY_COL].mean()
     )
     fig, ax = pl.subplots(figsize=(10, 5))
     ax.plot(
         monthly_delay["Date"].dt.to_timestamp(),
-        monthly_delay[delay_col],
+        monthly_delay[DELAY_COL],
         color="tab:blue",
         linewidth=2,
     )
-    mean_delay = monthly_delay[delay_col].mean()
+    mean_delay = monthly_delay[DELAY_COL].mean()
     ax.axhline(
         mean_delay,
         color="tab:red",
