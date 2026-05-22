@@ -157,6 +157,7 @@ def map_delay_3d(years, df):
     if not route_df.empty:
         route_min = route_df["trains"].min()
         route_max = route_df["trains"].max()
+
         # Calcul d'une couleur et d'une épaisseur de ligne proportionnelles
         # au nombre de trains programmés. On normalise entre route_min et
         # route_max pour obtenir un dégradé de couleurs et une largeur.

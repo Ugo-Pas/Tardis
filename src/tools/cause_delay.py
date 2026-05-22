@@ -14,7 +14,7 @@ import numpy as np
 def graph_delay_causes_by_route(df, departure=None, arrival=None, year=None):
     departure_col = "Departure station"
     arrival_col = "Arrival station"
-    # name cols for pct delay 
+    # name cols for pct delay
     cause_cols = [
         "Pct delay due to external causes",
         "Pct delay due to infrastructure",
@@ -26,7 +26,7 @@ def graph_delay_causes_by_route(df, departure=None, arrival=None, year=None):
     if year == []:
         return st.error("Aucune année n'a été sélectionnée", icon="🚨")
     filtered = df.copy()
-# get cols which stations
+    # get cols which stations
     if year is not None:
         years = year if isinstance(year, (list, tuple, np.ndarray)) else [year]
         if "All" not in years:
@@ -69,7 +69,7 @@ def graph_delay_causes_by_route(df, departure=None, arrival=None, year=None):
     }
 
     pretty_index = [labels.get(col, col) for col in cause_pct.index]
-#creat grapph 
+    # creat grapph
     fig, ax = pl.subplots(figsize=(10, 5))
     bars = ax.barh(pretty_index, cause_pct.values, color="tab:blue", alpha=0.9)
     ax.invert_yaxis()
