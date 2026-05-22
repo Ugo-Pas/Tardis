@@ -76,7 +76,7 @@ def map_delay_3d(years, df):
         ]
     )
     # Nom de la colonne dans le DataFrame d'entrée qui contient le retard moyen
-    delay_col = "Average delay of all trains at departure"
+    DELAY_COL = "Average delay of all trains at departure"
     # Filtrage par année:
     # - si years == "All" on conserve toutes les lignes
     # - sinon on accepte un entier ou une liste d'années
@@ -92,8 +92,8 @@ def map_delay_3d(years, df):
     # Conversion des colonnes contenant des nombres éventuellement formatés
     # avec une virgule décimale en valeurs numériques (float/int). On force
     # les erreurs en NaN via errors='coerce'.
-    filtered_df[delay_col] = pd.to_numeric(
-        filtered_df[delay_col].astype(str).str.replace(",", "."),
+    filtered_df[DELAY_COL] = pd.to_numeric(
+        filtered_df[DELAY_COL].astype(str).str.replace(",", "."),
         errors="coerce",
     )
     filtered_df["Number of scheduled trains"] = pd.to_numeric(
@@ -102,9 +102,9 @@ def map_delay_3d(years, df):
     )
     # Calcul du retard moyen par gare de départ
     delay_by_station = (
-        filtered_df.groupby("Departure station", as_index=False)[delay_col]
+        filtered_df.groupby("Departure station", as_index=False)[DELAY_COL]
         .mean()
-        .rename(columns={delay_col: "delay"})
+        .rename(columns={DELAY_COL: "delay"})
     )
     # Agrégation du nombre de trains programmés par paire (départ, arrivée)
     route_by_station = (

@@ -10,21 +10,21 @@ import streamlit as st
 
 
 def one_year_old_Garph(years, df: list):
-    delay_col = "Average delay of all trains at arrival"
+    DELAY_COL = "Average delay of all trains at arrival"
 
     # Support a single year, a list of years, or the special "All" value
     if years == "All" or (isinstance(years, (list, tuple)) and "All" in years):
-        filtered = df[["Date", "Service", delay_col]].dropna()
+        filtered = df[["Date", "Service", DELAY_COL]].dropna()
     else:
         if not isinstance(years, (list, tuple)):
             years = [years]
         filtered = df.loc[
-            df["Date"].dt.year.isin(years), ["Date", "Service", delay_col]
+            df["Date"].dt.year.isin(years), ["Date", "Service", DELAY_COL]
         ].dropna()
     monthly_delay_by_service = (
-        filtered.groupby(["Date", "Service"], as_index=False)[delay_col]
+        filtered.groupby(["Date", "Service"], as_index=False)[DELAY_COL]
         .mean()
-        .pivot(index="Date", columns="Service", values=delay_col)
+        .pivot(index="Date", columns="Service", values=DELAY_COL)
     )
     fig, ax = pl.subplots(figsize=(10, 5))
     if "National" in monthly_delay_by_service.columns:
