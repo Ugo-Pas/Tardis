@@ -47,9 +47,9 @@ def graph_departure_arrival_station(df, departure=None, arrival=None, year=None)
         )
         departure_str = departure if departure else "toutes les gares de départ"
         arrival_str = arrival if arrival else "toutes les gares d'arrivée"
-        print(f"Aucune donnee pour {departure_str} -> {arrival_str} {year_str}.")
+        print(f"Aucune donnée pour {departure_str} -> {arrival_str} {year_str}.")
         st.write(
-            "Aucune donnee pour", departure_str, "->", arrival_str, " ", year_str, "."
+            "Aucune donnée pour", departure_str, "->", arrival_str, " ", year_str, "."
         )
     else:
         fig, ax = pl.subplots(figsize=(10, 5))
@@ -122,7 +122,7 @@ def graph_departure_arrival_station_delay(df, departure=None, arrival=None, year
     target_col = "Average delay of all trains at arrival"
 
     if target_col not in df.columns:
-        st.write("Aucune colonne de retard moyen n'a ete trouvee.")
+        st.write("Aucune colonne de retard moyen n'a été trouvée.")
         return
 
     # Start with all rows
@@ -156,10 +156,10 @@ def graph_departure_arrival_station_delay(df, departure=None, arrival=None, year
             if year
             else "toutes les années"
         )
-        departure_str = departure if departure else "toutes les gares de depart"
-        arrival_str = arrival if arrival else "toutes les gares d'arrivee"
+        departure_str = departure if departure else "toutes les gares de départ"
+        arrival_str = arrival if arrival else "toutes les gares d'arrivée"
         st.write(
-            "Aucune donnee de retard pour",
+            "Aucune donnée de retard pour",
             departure_str,
             "->",
             arrival_str,
@@ -193,7 +193,7 @@ def graph_departure_arrival_station_delay(df, departure=None, arrival=None, year
             title_parts.append(f" ({departure} -> {arrival})")
 
         if year:
-            year_str = f"{year[0]}" if len(year) == 1 else f"{year[0]} a {year[-1]}"
+            year_str = f"{year[0]}" if len(year) == 1 else f"{year[0]} à {year[-1]}"
             title_parts.append(f", {year_str}")
 
         ax.set_title("".join(title_parts))

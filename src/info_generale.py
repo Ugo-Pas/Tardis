@@ -17,7 +17,7 @@ from src.tools import *
 
 def render(df, years):
     st.markdown(
-        "<h1 style='text-align: center;'>Info generale</h1>", unsafe_allow_html=True
+        "<h1 style='text-align: center;'>Info générale</h1>", unsafe_allow_html=True
     )
     st.divider()
     st.markdown("### Résumé exécutif")
@@ -30,11 +30,11 @@ def render(df, years):
         or (isinstance(years, (list, tuple)) and "All" in years)
         or years == "All"
     ):
-        st.write("Graphe all year")
-        one_year_old_Garph("All", df)
+        st.write("Graphique pour toutes les années")
+        one_year_old_Garph("All", df) # graph no need list of year 
         train_cancel_one_year("All", df)
     else:
-        one_year_old_Garph(years, df)
+        one_year_old_Garph(years, df) # graph need list of year
         train_cancel_one_year(years, df)
     st.divider()
     st.markdown("### Causes des retards")

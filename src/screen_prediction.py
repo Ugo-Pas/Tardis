@@ -45,13 +45,13 @@ def get_service_national(df, departure_station: str, arrival_station: str) -> in
 def check_error(detparture, arrival, month):
     ret = 0
     if detparture == None:
-        st.error("Aucunes stations de depart n'a eté selectioné", icon="🚨")
+        st.error("Aucune station de départ n'a été sélectionnée", icon="🚨")
         ret = -1
     if arrival == None:
-        st.error("Aucunes stations d'arriver n'a eté selectioné", icon="🚨")
+        st.error("Aucune station d'arrivée n'a été sélectionnée", icon="🚨")
         ret = -1
     if month == -1:
-        st.error("Aucuns mois n'a eté selectioné", icon="🚨")
+        st.error("Aucun mois n'a été sélectionné", icon="🚨")
         ret = -1
     return ret
 
@@ -98,7 +98,7 @@ def render(
     st.divider()
     left, middle, right = st.columns(3)
     if middle.button(
-        "Lancée la prédiction", icon="📈", width="stretch", shortcut="Enter"
+        "Lancer la prédiction", icon="📈", width="stretch", shortcut="Enter"
     ):
         if check_error(departure_station, arrival_station, month) == -1:
             return
@@ -150,4 +150,4 @@ def render(
             )
         st.divider()
         print(f"Retard prédit : {train_late:.1f} minutes")
-        print(f"Pourcantage de chance d'un train annulé : {pct_cancel:.1f} %")
+        print(f"Pourcentage de chance qu'un train soit annulé : {pct_cancel:.1f} %")
