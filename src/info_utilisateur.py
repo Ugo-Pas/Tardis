@@ -30,4 +30,7 @@ def render(df, departure_station, arrival_station, year):
     st.markdown(
         f"### Causes des retards sur le trajet {departure_station} -> {arrival_station}"
     )
-    graph_delay_causes_by_route(df, departure_station, arrival_station, year)
+    use_pie_chart = st.checkbox("Afficher en camembert", value=False)
+    graph_delay_causes_by_route(
+        df, departure_station, arrival_station, year, use_pie_chart=use_pie_chart
+    )

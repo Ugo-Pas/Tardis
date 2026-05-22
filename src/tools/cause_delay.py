@@ -11,7 +11,9 @@ import streamlit as st
 import numpy as np
 
 
-def graph_delay_causes_by_route(df, departure=None, arrival=None, year=None):
+def graph_delay_causes_by_route(
+    df, departure=None, arrival=None, year=None, use_pie_chart=False
+):
     departure_col = "Departure station"
     arrival_col = "Arrival station"
     # name cols for pct delay
@@ -70,18 +72,28 @@ def graph_delay_causes_by_route(df, departure=None, arrival=None, year=None):
 
     pretty_index = [labels.get(col, col) for col in cause_pct.index]
     # creat grapph
-    fig, ax = pl.subplots(figsize=(10, 5))
-    bars = ax.barh(pretty_index, cause_pct.values, color="tab:blue", alpha=0.9)
-    ax.invert_yaxis()
-
-    for bar, value in zip(bars, cause_pct.values):
-        ax.text(
-            value + 0.3,
-            bar.get_y() + bar.get_height() / 2,
-            f"{value:.1f}%",
-            va="center",
-            fontsize=9,
+    if use_pie_chart:
+        fig, ax = pl.subplots(figsize=(8, 8))
+        ax.pie(
+            cause_pct.values,
+            labels=pretty_index,
+            autopct=lambda pct: f"{pct:.1f}%",
+            startangle=90,
         )
+        ax.axis("equal")
+    else:
+        fig, ax = pl.subplots(figsize=(10, 5))
+        bars = ax.barh(pretty_index, cause_pct.values, color="tab:blue", alpha=0.9)
+        ax.invert_yaxis()
+
+        for bar, value in zip(bars, cause_pct.values):
+            ax.text(
+                value + 0.3,
+                bar.get_y() + bar.get_height() / 2,
+                f"{value:.1f}%",
+                va="center",
+                fontsize=9,
+            )
 
     departure_str = (
         departure if departure not in (None, "Toute direction") else "Toutes les gares"
@@ -99,9 +111,10 @@ def graph_delay_causes_by_route(df, departure=None, arrival=None, year=None):
     ax.set_title(
         f"Répartition des causes de retard (%)\n{departure_str} -> {arrival_str} ({year_str})"
     )
-    ax.set_xlabel("Pourcentage moyen (%)")
-    ax.set_ylabel("Cause du retard")
-    ax.grid(axis="x", alpha=0.25)
+    if not use_pie_chart:
+        ax.set_xlabel("Pourcentage moyen (%)")
+        ax.set_ylabel("Cause du retard")
+        ax.grid(axis="x", alpha=0.25)
     pl.tight_layout()
 
     st.pyplot(fig)

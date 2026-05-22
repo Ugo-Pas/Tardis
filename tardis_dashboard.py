@@ -160,7 +160,7 @@ def main():
     with st.sidebar:
         selected_page = st.radio(
             "Navigation",
-            ["🏠 Home", "🌐 Info générale", "👤 Info utilisateur", "📈 Prédiction"],
+            ["🏠 Home", "🌐 Info générales", "👤 Info utilisateur", "📈 Prédiction"],
             index=0,
         )  # select screen
         YEARS = get_def_years(df)  # get list f year in dataset
@@ -180,7 +180,7 @@ def main():
             )  # filter by screen
 
     # fuction to go on screen
-    if selected_page == "🌐 Info generale":
+    if selected_page == "🌐 Info générales":
         render_info_generale(df, year)
     elif selected_page == "👤 Info utilisateur":
         render_info_utilisateur(df, departure_station, arrival_station, year)
