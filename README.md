@@ -43,9 +43,15 @@ This is a tree for this project :
 ├── tardis_eda.ipynb 
 ├── tardis_dashboard.py 
 ├── src/
+|   ├── Bonus/
+|   |   └── ...
+|   ├── tools/
+|   |   └── ...
 │   ├── accueil.py
 |   ├── info_generale.py
-│   └── info_utilisateur.py
+│   ├── info_utilisateur.py
+|   ├── README.md
+|   └── screen_prediction.py
 ├── datasets/
 |   └── dataset.csv
 ```

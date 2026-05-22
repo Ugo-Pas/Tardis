@@ -31,10 +31,10 @@ def render(df, years):
         or years == "All"
     ):
         st.write("Graphique pour toutes les années")
-        one_year_old_Garph("All", df) # graph no need list of year 
+        one_year_old_Garph("All", df)  # graph no need list of year
         train_cancel_one_year("All", df)
     else:
-        one_year_old_Garph(years, df) # graph need list of year
+        one_year_old_Garph(years, df)  # graph need list of year
         train_cancel_one_year(years, df)
     st.divider()
     st.markdown("### Causes des retards")
