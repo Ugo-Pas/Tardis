@@ -125,12 +125,22 @@ def render(
             weekend,
             service_national,
         )
+        nbr_train = model(
+            "src/Bonus/model_nb_train.pkl",
+            departure,
+            arrival,
+            year,
+            month,
+            vacances,
+            weekend,
+            service_national,
+        )
 
         col1, col2, col3 = st.columns(3)
         with col1:
             st.metric(
                 label="📋 Nombre total de trains",
-                value=f"in progress",
+                value=f"{nbr_train:.0f}",
                 delta=None,
             )
         with col2:
