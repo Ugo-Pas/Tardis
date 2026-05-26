@@ -1,0 +1,7 @@
+services:
+  dashboard:
+    build: .
+    working_dir: /app
+    ports:
+      - "${PORT:-3000}:8501"
+    command: ["streamlit", "run", "tardis_dashboard.py", "--server.address=0.0.0.0", "--server.port=8501"]
