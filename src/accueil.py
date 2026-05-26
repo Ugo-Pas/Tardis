@@ -52,4 +52,3 @@ def render(df, contributors=None):
         ### Merci à vous, bonne utilisation
         """
     )
-    st.image("/home/ugo/delivery/AIA/Tardis/src/Bonus/epitech_logo_bleu.png")
