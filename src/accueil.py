@@ -46,6 +46,8 @@ def render(df, contributors=None):
         - [Tadomika-Ari](https://github.com/Tadomika-Ari)
         - [Pekkatrol](https://github.com/Pekkatrol)
 
+        ### Dépôt du projet 
+        - [Tardis](https://github.com/Ugo-Pas/Tardis)
         ### Merci à vous, bonne utilisation
         """
     )
