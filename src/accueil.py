@@ -41,7 +41,8 @@ def render(df, contributors=None):
         - Les graphiques se mettent à jour automatiquement selon tes choix.
         - Si une gare n'apparaît pas, vérifie d'abord la sélection des années.
 
-        ### Contributeurs
+        ### Contributeurs : 
+        ##### Team ALUF (Analytics & Lightweight Unified Forecast)
         - [Ugo-Pas](https://github.com/Ugo-Pas)
         - [Tadomika-Ari](https://github.com/Tadomika-Ari)
         - [Pekkatrol](https://github.com/Pekkatrol)
